@@ -120,12 +120,12 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
     """
     if is_any_api_key(inputs):
         chatbot._cookies['api_key'] = inputs
-        chatbot.append(("输入已识别为openai的api_key", what_keys(inputs)))
-        yield from update_ui(chatbot=chatbot, history=history, msg="api_key已导入") # 刷新界面
+        chatbot.append(("输入已识别为 ETOChat 的 api_key 。现在您可清空输入区中的内容，输入您的需求，开始使用啦！", what_keys(inputs)))
+        yield from update_ui(chatbot=chatbot, history=history, msg="api_key 已导入") # 刷新界面
         return
     elif not is_any_api_key(chatbot._cookies['api_key']):
-        chatbot.append((inputs, "缺少api_key。\n\n1. 临时解决方案：直接在输入区键入api_key，然后回车提交。\n\n2. 长效解决方案：在config.py中配置。"))
-        yield from update_ui(chatbot=chatbot, history=history, msg="缺少api_key") # 刷新界面
+        chatbot.append((inputs, "缺少 api_key。请前往 <a href='https://ai.cs.ac.cn/dashboard' target='_blank'>ETOChat</a> 获取 api_key ，粘贴到右侧输入区中提交即可。"))
+        yield from update_ui(chatbot=chatbot, history=history, msg="缺少 api_key") # 刷新界面
         return
 
     if additional_fn is not None:
@@ -215,7 +215,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
 
 def handle_error(inputs, llm_kwargs, chatbot, history, chunk_decoded, error_msg):
     from .bridge_all import model_info
-    openai_website = ' 请登录OpenAI查看详情 https://platform.openai.com/signup'
+    openai_website = ' 请登录 ETOChat 查看详情 https://ai.cs.ac.cn/dashboard'
     if "reduce the length" in error_msg:
         if len(history) >= 2: history[-1] = ""; history[-2] = "" # 清除当前溢出的输入：history[-2] 是本次输入, history[-1] 是本次输出
         history = clip_history(inputs=inputs, history=history, tokenizer=model_info[llm_kwargs['llm_model']]['tokenizer'], 
@@ -252,7 +252,8 @@ def generate_payload(inputs, llm_kwargs, history, system_prompt, stream):
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"
+        "Authorization": f"Bearer {api_key}",
+        "x-forwarded-for": llm_kwargs['x-forwarded-for']
     }
     if API_ORG.startswith('org-'): headers.update({"OpenAI-Organization": API_ORG})
     if llm_kwargs['llm_model'].startswith('azure-'): headers.update({"api-key": api_key})

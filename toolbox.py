@@ -71,6 +71,7 @@ def ArgsGeneralWrapper(f):
             'max_length': max_length,
             'temperature':temperature,
             'client_ip': request.client.host,
+            'x-forwarded-for': request.client.host,
         }
         plugin_kwargs = {
             "advanced_arg": plugin_advanced_arg,
@@ -656,7 +657,7 @@ def what_keys(keys):
         if is_azure_api_key(k): 
             avail_key_list['Azure Key'] += 1
 
-    return f"检测到： OpenAI Key {avail_key_list['OpenAI Key']} 个, Azure Key {avail_key_list['Azure Key']} 个, API2D Key {avail_key_list['API2D Key']} 个"
+    return f"检测到： ETOChat Key {avail_key_list['OpenAI Key']} 个"
 
 def select_api_key(keys, llm_model):
     import random

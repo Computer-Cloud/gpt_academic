@@ -7,8 +7,8 @@ FROM python:3.11
 
 # 非必要步骤，更换pip源
 RUN echo '[global]' > /etc/pip.conf && \
-    echo 'index-url = https://mirrors.aliyun.com/pypi/simple/' >> /etc/pip.conf && \
-    echo 'trusted-host = mirrors.aliyun.com' >> /etc/pip.conf
+    echo 'index-url = https://pypi.tuna.tsinghua.edu.cn/simple' >> /etc/pip.conf && \
+    echo 'trusted-host = pypi.tuna.tsinghua.edu.cn' >> /etc/pip.conf
 
 
 # 进入工作路径
