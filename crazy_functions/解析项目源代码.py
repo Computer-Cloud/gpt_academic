@@ -23,7 +23,7 @@ def 解析源代码新(file_manifest, project_folder, llm_kwargs, plugin_kwargs,
             file_content = f.read()
         prefix = "接下来请你逐文件分析下面的工程" if index==0 else ""
         i_say = prefix + f'请对下面的程序文件做一个概述文件名是{os.path.relpath(fp, project_folder)}，文件代码是 ```{file_content}```'
-        i_say_show_user = prefix + f'[{index}/{len(file_manifest)}] 请对下面的程序文件做一个概述: {os.path.abspath(fp)}'
+        i_say_show_user = prefix + f'[{index}/{len(file_manifest)}] 请对下面的程序文件做一个概述: {fp}'
         # 装载请求内容
         inputs_array.append(i_say)
         inputs_show_user_array.append(i_say_show_user)
@@ -109,9 +109,8 @@ def 解析源代码新(file_manifest, project_folder, llm_kwargs, plugin_kwargs,
 def 解析项目本身(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, web_port):
     history = []    # 清空历史，以免输入溢出
     import glob
-    file_manifest = [f for f in glob.glob('./*.py') if ('test_project' not in f) and ('gpt_log' not in f)] + \
-                    [f for f in glob.glob('./crazy_functions/*.py') if ('test_project' not in f) and ('gpt_log' not in f)]+ \
-                    [f for f in glob.glob('./request_llm/*.py') if ('test_project' not in f) and ('gpt_log' not in f)]
+    file_manifest = [f for f in glob.glob('./*.py')] + \
+                    [f for f in glob.glob('./*/*.py')]
     project_folder = './'
     if len(file_manifest) == 0:
         report_execption(chatbot, history, a = f"解析项目: {txt}", b = f"找不到任何python文件: {txt}")
@@ -137,6 +136,23 @@ def 解析一个Python项目(txt, llm_kwargs, plugin_kwargs, chatbot, history, s
         return
     yield from 解析源代码新(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt)
 
+@CatchException
+def 解析一个Matlab项目(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, web_port):
+    history = []    # 清空历史，以免输入溢出
+    import glob, os
+    if os.path.exists(txt):
+        project_folder = txt
+    else:
+        if txt == "": txt = '空空如也的输入栏'
+        report_execption(chatbot, history, a = f"解析Matlab项目: {txt}", b = f"找不到本地项目或无权访问: {txt}")
+        yield from update_ui(chatbot=chatbot, history=history) # 刷新界面
+        return
+    file_manifest = [f for f in glob.glob(f'{project_folder}/**/*.m', recursive=True)]
+    if len(file_manifest) == 0:
+        report_execption(chatbot, history, a = f"解析Matlab项目: {txt}", b = f"找不到任何`.m`源文件: {txt}")
+        yield from update_ui(chatbot=chatbot, history=history) # 刷新界面
+        return
+    yield from 解析源代码新(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt)
 
 @CatchException
 def 解析一个C项目的头文件(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, web_port):
