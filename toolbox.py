@@ -159,7 +159,7 @@ def CatchException(f):
                 chatbot_with_cookie.clear()
                 chatbot_with_cookie.append(["插件调度异常", "异常原因"])
             chatbot_with_cookie[-1] = (chatbot_with_cookie[-1][0],
-                           f"[Local Message] 实验性函数调用出错: \n\n{tb_str} \n\n当前代理可用性: \n\n{check_proxy(proxies)}")
+                           f"[Local Message] 插件调用出错: \n\n{tb_str} \n\n当前代理可用性: \n\n{check_proxy(proxies)}")
             yield from update_ui(chatbot=chatbot_with_cookie, history=history, msg=f'异常 {e}') # 刷新界面
     return decorated
 
@@ -188,7 +188,7 @@ def HotReload(f):
 其他小工具:
     - write_history_to_file:    将结果写入markdown文件中
     - regular_txt_to_markdown:  将普通文本转换为Markdown格式的文本。
-    - report_execption:         向chatbot中添加简单的意外错误信息
+    - report_exception:         向chatbot中添加简单的意外错误信息
     - text_divide_paragraph:    将文本按照段落分隔符分割开，生成带有段落标签的HTML代码。
     - markdown_convertion:      用多种方式组合，将markdown转化为好看的html
     - format_io:                接管gradio默认的markdown处理方式
@@ -261,7 +261,7 @@ def regular_txt_to_markdown(text):
 
 
 
-def report_execption(chatbot, history, a, b):
+def report_exception(chatbot, history, a, b):
     """
     向chatbot中添加错误信息
     """
@@ -626,13 +626,14 @@ def on_file_uploaded(request: gradio.Request, files, chatbot, txt, txt2, checkbo
 
 
 def on_report_generated(cookies, files, chatbot):
-    from toolbox import find_recent_files
-    PATH_LOGGING = get_conf('PATH_LOGGING')
+    # from toolbox import find_recent_files
+    # PATH_LOGGING = get_conf('PATH_LOGGING')
     if 'files_to_promote' in cookies:
         report_files = cookies['files_to_promote']
         cookies.pop('files_to_promote')
     else:
-        report_files = find_recent_files(PATH_LOGGING)
+        report_files = []
+    #     report_files = find_recent_files(PATH_LOGGING)
     if len(report_files) == 0:
         return cookies, None, chatbot
     # files.extend(report_files)
