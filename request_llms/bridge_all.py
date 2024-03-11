@@ -94,7 +94,7 @@ model_info = {
         "fn_with_ui": chatgpt_ui,
         "fn_without_ui": chatgpt_noui,
         "endpoint": openai_endpoint,
-        "max_token": 4096,
+        "max_token": 16385,
         "tokenizer": tokenizer_gpt35,
         "token_cnt": get_token_num_gpt35,
     },
@@ -126,7 +126,16 @@ model_info = {
         "token_cnt": get_token_num_gpt35,
     },
 
-    "gpt-3.5-turbo-1106": {#16k
+    "gpt-3.5-turbo-1106": { #16k
+        "fn_with_ui": chatgpt_ui,
+        "fn_without_ui": chatgpt_noui,
+        "endpoint": openai_endpoint,
+        "max_token": 16385,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
+
+    "gpt-3.5-turbo-0125": { #16k
         "fn_with_ui": chatgpt_ui,
         "fn_without_ui": chatgpt_noui,
         "endpoint": openai_endpoint,
@@ -296,7 +305,35 @@ model_info = {
         "token_cnt": get_token_num_gpt35,
     },
 }
-
+# -=-=-=-=-=-=- 月之暗面 -=-=-=-=-=-=-
+from request_llms.bridge_moonshot import predict as moonshot_ui
+from request_llms.bridge_moonshot import predict_no_ui_long_connection as moonshot_no_ui
+model_info.update({
+    "moonshot-v1-8k": {
+        "fn_with_ui": moonshot_ui,
+        "fn_without_ui": moonshot_no_ui,
+        "endpoint": None,
+        "max_token": 1024 * 8,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
+    "moonshot-v1-32k": {
+        "fn_with_ui": moonshot_ui,
+        "fn_without_ui": moonshot_no_ui,
+        "endpoint": None,
+        "max_token": 1024 * 32,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
+    "moonshot-v1-128k": {
+        "fn_with_ui": moonshot_ui,
+        "fn_without_ui": moonshot_no_ui,
+        "endpoint": None,
+        "max_token": 1024 * 128,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    }
+})
 # -=-=-=-=-=-=- api2d 对齐支持 -=-=-=-=-=-=-
 for model in AVAIL_LLM_MODELS:
     if model.startswith('api2d-') and (model.replace('api2d-','') in model_info.keys()):
@@ -488,6 +525,7 @@ if "qwen-local" in AVAIL_LLM_MODELS:
             "qwen-local": {
                 "fn_with_ui": qwen_local_ui,
                 "fn_without_ui": qwen_local_noui,
+                "can_multi_thread": False,
                 "endpoint": None,
                 "max_token": 4096,
                 "tokenizer": tokenizer_gpt35,
@@ -504,6 +542,7 @@ if "qwen-turbo" in AVAIL_LLM_MODELS or "qwen-plus" in AVAIL_LLM_MODELS or "qwen-
             "qwen-turbo": {
                 "fn_with_ui": qwen_ui,
                 "fn_without_ui": qwen_noui,
+                "can_multi_thread": True,
                 "endpoint": None,
                 "max_token": 6144,
                 "tokenizer": tokenizer_gpt35,
@@ -512,6 +551,7 @@ if "qwen-turbo" in AVAIL_LLM_MODELS or "qwen-plus" in AVAIL_LLM_MODELS or "qwen-
             "qwen-plus": {
                 "fn_with_ui": qwen_ui,
                 "fn_without_ui": qwen_noui,
+                "can_multi_thread": True,
                 "endpoint": None,
                 "max_token": 30720,
                 "tokenizer": tokenizer_gpt35,
@@ -520,6 +560,7 @@ if "qwen-turbo" in AVAIL_LLM_MODELS or "qwen-plus" in AVAIL_LLM_MODELS or "qwen-
             "qwen-max": {
                 "fn_with_ui": qwen_ui,
                 "fn_without_ui": qwen_noui,
+                "can_multi_thread": True,
                 "endpoint": None,
                 "max_token": 28672,
                 "tokenizer": tokenizer_gpt35,
@@ -536,6 +577,7 @@ if "spark" in AVAIL_LLM_MODELS:   # 讯飞星火认知大模型
             "spark": {
                 "fn_with_ui": spark_ui,
                 "fn_without_ui": spark_noui,
+                "can_multi_thread": True,
                 "endpoint": None,
                 "max_token": 4096,
                 "tokenizer": tokenizer_gpt35,
@@ -552,6 +594,7 @@ if "sparkv2" in AVAIL_LLM_MODELS:   # 讯飞星火认知大模型
             "sparkv2": {
                 "fn_with_ui": spark_ui,
                 "fn_without_ui": spark_noui,
+                "can_multi_thread": True,
                 "endpoint": None,
                 "max_token": 4096,
                 "tokenizer": tokenizer_gpt35,
@@ -568,6 +611,7 @@ if "sparkv3" in AVAIL_LLM_MODELS or "sparkv3.5" in AVAIL_LLM_MODELS:   # 讯飞�
             "sparkv3": {
                 "fn_with_ui": spark_ui,
                 "fn_without_ui": spark_noui,
+                "can_multi_thread": True,
                 "endpoint": None,
                 "max_token": 4096,
                 "tokenizer": tokenizer_gpt35,
@@ -576,6 +620,7 @@ if "sparkv3" in AVAIL_LLM_MODELS or "sparkv3.5" in AVAIL_LLM_MODELS:   # 讯飞�
             "sparkv3.5": {
                 "fn_with_ui": spark_ui,
                 "fn_without_ui": spark_noui,
+                "can_multi_thread": True,
                 "endpoint": None,
                 "max_token": 4096,
                 "tokenizer": tokenizer_gpt35,
