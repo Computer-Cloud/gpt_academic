@@ -158,12 +158,12 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
     """
     if is_any_api_key(inputs):
         chatbot._cookies['api_key'] = inputs
-        chatbot.append(("输入已识别为 ETOChat 的 api_key 。现在您可清空输入区中的内容，输入您的需求，开始使用啦！", what_keys(inputs)))
-        yield from update_ui(chatbot=chatbot, history=history, msg="api_key 已导入") # 刷新界面
+        chatbot.append(("输入已被识别为 ETOChat API Key 。现在您可清空输入区中的内容，输入您的需求，开始使用啦！", what_keys(inputs)))
+        yield from update_ui(chatbot=chatbot, history=history, msg="API Key 已导入") # 刷新界面
         return
     elif not is_any_api_key(chatbot._cookies['api_key']):
-        chatbot.append((inputs, "缺少 api_key。请前往 <a href='https://ai.cs.ac.cn/dashboard' target='_blank'>ETOChat</a> 获取 api_key ，粘贴到右侧输入区中提交即可。"))
-        yield from update_ui(chatbot=chatbot, history=history, msg="缺少 api_key") # 刷新界面
+        chatbot.append((inputs, "缺少 API Key 。请前往 <a href='https://ai.cs.ac.cn/dashboard' target='_blank'>ETOChat</a> 获取 API Key ，粘贴到右侧输入区中提交即可。"))
+        yield from update_ui(chatbot=chatbot, history=history, msg="缺少 API Key") # 刷新界面
         return
 
     user_input = inputs
