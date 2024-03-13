@@ -13,7 +13,7 @@
 import os
 import time
 import traceback
-from toolbox import get_conf, update_ui, trimmed_format_exc, encode_image, every_image_file_in_path
+from toolbox import get_conf, update_ui, trimmed_format_exc, encode_image, every_image_file_in_path, is_any_api_key, what_keys
 
 picture_system_prompt = "\n当回复图像时,必须说明正在回复哪张图像。所有图像仅在最后一个问题中提供,即使它们在历史记录中被提及。请使用'这是第X张图像:'的格式来指明您正在描述的是哪张图像。"
 Claude_3_Models = ["claude-3-sonnet-20240229", "claude-3-opus-20240229"]
@@ -120,10 +120,20 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
     """
     if inputs == "":     inputs = "空空如也的输入栏"
     from anthropic import Anthropic
-    if len(ANTHROPIC_API_KEY) == 0:
-        chatbot.append((inputs, "没有设置ANTHROPIC_API_KEY"))
-        yield from update_ui(chatbot=chatbot, history=history, msg="等待响应") # 刷新界面
+    if is_any_api_key(inputs):
+        chatbot._cookies['api_key'] = inputs
+        chatbot.append(("输入已被识别为 ETOChat API Key 。现在您可清空输入区中的内容，输入您的需求，开始使用啦！", what_keys(inputs)))
+        yield from update_ui(chatbot=chatbot, history=history, msg="api_key 已导入") # 刷新界面
         return
+    elif not is_any_api_key(chatbot._cookies['api_key']):
+        chatbot.append((inputs, "缺少 API Key 。请前往 <a href='https://ai.cs.ac.cn/dashboard' target='_blank'>ETOChat</a> 获取 API Key ，粘贴到右侧输入区中提交即可。"))
+        yield from update_ui(chatbot=chatbot, history=history, msg="缺少 API Key") # 刷新界面
+        return
+
+    # if len(ANTHROPIC_API_KEY) == 0:
+    #     chatbot.append((inputs, "没有设置ANTHROPIC_API_KEY"))
+    #     yield from update_ui(chatbot=chatbot, history=history, msg="等待响应") # 刷新界面
+    #     return
 
     if additional_fn is not None:
         from core_functional import handle_core_functionality
@@ -158,7 +168,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
         try:
             # make a POST request to the API endpoint, stream=True
             from .bridge_all import model_info
-            anthropic = Anthropic(api_key=ANTHROPIC_API_KEY, base_url=model_info[llm_kwargs['llm_model']]['endpoint'])
+            anthropic = Anthropic(api_key=chatbot._cookies['api_key'], base_url='https://api.ai.cs.ac.cn')
             # endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
             # with ProxyNetworkActivate()
             stream = anthropic.messages.create(

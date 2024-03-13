@@ -324,7 +324,8 @@ def generate_payload(inputs, llm_kwargs, history, system_prompt, stream):
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}",
-        "x-forwarded-for": llm_kwargs['x-forwarded-for']
+        "x-cs-client-id": llm_kwargs['x-cs-client-id'],
+        "x-cs-client-ip": llm_kwargs['x-cs-client-ip']
     }
     if API_ORG.startswith('org-'): headers.update({"OpenAI-Organization": API_ORG})
     if llm_kwargs['llm_model'].startswith('azure-'):

@@ -106,6 +106,8 @@ def ArgsGeneralWrapper(f):
             'max_length': max_length,
             'temperature': temperature,
             'client_ip': request.client.host,
+            'x-cs-client-id': 'aApiK5hcyTF7P01jpmFFfEWmmHxvA1Cn',
+            'x-cs-client-ip': request.headers["x-forwarded-for"],
             'most_recent_uploaded': cookies.get('most_recent_uploaded')
         }
         plugin_kwargs = {
