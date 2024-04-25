@@ -32,7 +32,7 @@ else:
 
 # [step 3]>> 模型选择是 (注意: LLM_MODEL是默认选中的模型, 它*必须*被包含在AVAIL_LLM_MODELS列表中 )
 LLM_MODEL = "gpt-3.5-turbo-16k" # 可选 ↓↓↓
-AVAIL_LLM_MODELS = ["gpt-4-1106-preview", "gpt-4-turbo-preview", "gpt-4-vision-preview",
+AVAIL_LLM_MODELS = ["gpt-4-1106-preview", "gpt-4-turbo-preview", "gpt-4-vision-preview", "gpt-4-turbo", "gpt-4-turbo-2024-04-09",
                     "gpt-3.5-turbo-1106", "gpt-3.5-turbo-16k", "gpt-3.5-turbo", "azure-gpt-3.5",
                     "gpt-4", "gpt-4-32k", "azure-gpt-4", "glm-4", "glm-3-turbo",
                     "gemini-pro", "chatglm3"
@@ -45,8 +45,9 @@ AVAIL_LLM_MODELS = ["gpt-4-1106-preview", "gpt-4-turbo-preview", "gpt-4-vision-p
 #   "qwen-turbo", "qwen-plus", "qwen-max", "qwen-local",
 #   "moonshot-v1-128k", "moonshot-v1-32k", "moonshot-v1-8k",
 #   "gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613", "gpt-3.5-turbo-0125"
-#   "claude-3-sonnet-20240229","claude-3-opus-20240229", "claude-2.1", "claude-instant-1.2",
+#   "claude-3-haiku-20240307","claude-3-sonnet-20240229","claude-3-opus-20240229", "claude-2.1", "claude-instant-1.2",
 #   "moss", "llama2", "chatglm_onnx", "internlm", "jittorllms_pangualpha", "jittorllms_llama",
+#   "yi-34b-chat-0205", "yi-34b-chat-200k"
 # ]
 # --- --- --- ---
 # 此外，为了更灵活地接入one-api多模型管理界面，您还可以在接入one-api时，
@@ -156,7 +157,8 @@ ADD_WAIFU = False
 AUTHENTICATION = []
 
 
-# 如果需要在二级路径下运行（常规情况下，不要修改!!）（需要配合修改main.py才能生效!）
+# 如果需要在二级路径下运行（常规情况下，不要修改!!）
+# （举例 CUSTOM_PATH = "/gpt_academic"，可以让软件运行在 http://ip:port/gpt_academic/ 下。）
 CUSTOM_PATH = "/"
 
 
@@ -212,9 +214,17 @@ ANTHROPIC_API_KEY = ""
 MOONSHOT_API_KEY = ""
 
 
+# 零一万物(Yi Model) API KEY
+YIMODEL_API_KEY = ""
+
+
 # Mathpix 拥有执行PDF的OCR功能，但是需要注册账号
 MATHPIX_APPID = ""
 MATHPIX_APPKEY = ""
+
+
+# Mathpix 拥有执行PDF的OCR功能，但是需要注册账号
+DOC2X_API_KEY = ""
 
 
 # 自定义API KEY格式
@@ -312,6 +322,9 @@ NUM_CUSTOM_BASIC_BTN = 4
 │
 ├── "glm-4", "glm-3-turbo", "zhipuai" 智谱AI大模型
 │   └── ZHIPUAI_API_KEY
+│
+├── "yi-34b-chat-0205", "yi-34b-chat-200k" 等零一万物(Yi Model)大模型
+│   └── YIMODEL_API_KEY
 │
 ├── "qwen-turbo" 等通义千问大模型
 │   └──  DASHSCOPE_API_KEY
